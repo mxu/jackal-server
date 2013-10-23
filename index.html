@@ -47,7 +47,9 @@
 					<button type="button" class="btn btn-default" ng-show="activeID" ng-click="closeSession()">
 						<span class="glyphicon glyphicon-remove"></span> Close 
 					</button>
-					Public: <input type="checkbox" ng-model="active.public">
+					<input type="checkbox" ng-model="active.public"> Public
+					<span class="label label-default" ng-show="active.created">Created on {{active.created | date:'medium'}}</span>
+					<span class="label label-default" ng-show="active.lastChanged">Last changed on {{active.lastChanged | date:'medium'}}</span>
 				</div>
 				<div class="panel-body">
 					<input type="text" class="form-control" ng-model="active.title">

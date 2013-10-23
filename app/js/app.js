@@ -20,9 +20,7 @@ jackalApp.controller(
 		$scope.logout = function() {
 			console.log('logging out user ' + $scope.user.uid);
 			var userRef = ref.child('users').child($scope.user.uid);
-			userRef.once('value', function(snapshot) {
-				userRef.child('online').set(false);
-			})
+			userRef.child('online').set(false);
 			angularFireAuth.logout();
 		}
 
@@ -43,7 +41,13 @@ jackalApp.controller(
 		$scope.addSession = function() {
 			var sessionsRef = ref.child('users').child($scope.user.uid).child('sessions');
 			if($scope.activeID == undefined) {
-				var newRef = sessionsRef.push($scope.active);
+				var newRef = sessionsRef.push({
+					title: $scope.active.title,
+					code: $scope.active.code,
+					public: $scope.active.public,
+					created: Firebase.ServerValue.TIMESTAMP,
+					lastChanged: Firebase.ServerValue.TIMESTAMP
+				});
 				newRef.once('value', function(snapshot) {
 					$scope.setActive(newRef.name(), snapshot.val());
 				});
@@ -51,7 +55,16 @@ jackalApp.controller(
 				sessionsRef.once('value', function(snapshot) {
 					for(i in snapshot.val()) {
 						if(i == $scope.activeID) {
-							sessionsRef.child(i).update({title: $scope.active.title, code: $scope.active.code, public: $scope.active.public});
+							sessionsRef.child(i).update({
+								title: $scope.active.title,
+								code: $scope.active.code,
+								public: $scope.active.public,
+								lastChanged: Firebase.ServerValue.TIMESTAMP
+							});
+							sessionsRef.child(i).child('lastChanged').once('value', function(snapshot) {
+								$scope.active.lastChanged = snapshot.val();
+							});
+							break;
 						}
 					}
 				});
@@ -72,7 +85,7 @@ jackalApp.controller(
 
 		$scope.closeSession = function() {
 			$scope.activeID = undefined;
-			$scope.active = {title: '', code: '', public: false};
+			$scope.active = {title: '', code: '', public: false, created: undefined, lastChanged: undefined};
 		}
 
 		$scope.setActive = function(id, session) {
