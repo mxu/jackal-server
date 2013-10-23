@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" ng-app="jackalApp">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Jackal Database Dev Functions</title>
+		<link rel="stylesheet" href="vendor/css/normalize.css">
+		<link rel="stylesheet" href="vendor/css/bootstrap.min.css">
+		<link rel="stylesheet" href="app/css/app.css">
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="vendor/js/bootstrap.min.js"></script>
+		<script src="vendor/js/angular.js"></script>
+		<script src='https://cdn.firebase.com/v0/firebase.js'></script>
+		<script src="https://cdn.firebase.com/v0/firebase-simple-login.js"></script>
+		<script src='https://cdn.firebase.com/libs/angularfire/0.3.0/angularfire.min.js'></script>
+		<script src="app/js/app.js"></script>
+	</head>
+</html>
+	<body ng-controller="DatabaseCtrl">
+		<div class="navbar navbar-inverse navbar-static-top" role="navigation">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-content">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">Jackal</a>
+			</div>
+		</div>
+		<div class="container">
+			<div class="well">
+				<span ng-show="user">
+					<a ng-click="logout()">Logout</a> | {{user.name}} | {{user.uid}} 
+				</span>
+				<span ng-hide="user">
+					<a ng-click="login()">Login</a>
+				</span>
+			</div>
+			<div class="panel panel-default" ng-show="user">
+				<div class="panel-heading">
+					<button type="button" class="btn btn-default" ng-click="addSession()">
+						<span class="glyphicon glyphicon-file"></span> {{activeID == undefined && 'New' || 'Save'}} 
+					</button>
+					<button type="button" class="btn btn-default" ng-show="activeID" ng-click="removeSession()">
+						<span class="glyphicon glyphicon-trash"></span> Remove 
+					</button>
+					<button type="button" class="btn btn-default" ng-show="activeID" ng-click="closeSession()">
+						<span class="glyphicon glyphicon-remove"></span> Close 
+					</button>
+					Public: <input type="checkbox" ng-model="active.public">
+				</div>
+				<div class="panel-body">
+					<input type="text" class="form-control" ng-model="active.title">
+					<hr>
+					<textarea class="form-control" rows="5" ng-model="active.code"></textarea>
+				</div>
+				<div class="panel-body">
+					<div class="btn-group">
+						<button class="btn btn-default" ng-repeat="session in sessions" ng-click="setActive(session.$id, session)">{{session.$id}}</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
