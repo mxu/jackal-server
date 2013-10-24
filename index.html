@@ -38,8 +38,11 @@
 			</div>
 			<div class="panel panel-default" ng-show="user">
 				<div class="panel-heading">
-					<button type="button" class="btn btn-default" ng-click="addSession()">
-						<span class="glyphicon glyphicon-file"></span> {{activeID == undefined && 'New' || 'Save'}} 
+					<button type="button" class="btn btn-default" ng-hide="activeID" ng-click="addSession()">
+						<span class="glyphicon glyphicon-file"></span> New 
+					</button>
+					<button type="button" class="btn btn-default" ng-show="activeID" ng-click="saveSession()">
+						<span class="glyphicon glyphicon-file"></span> Save 
 					</button>
 					<button type="button" class="btn btn-default" ng-show="activeID" ng-click="removeSession()">
 						<span class="glyphicon glyphicon-trash"></span> Remove 
@@ -48,17 +51,32 @@
 						<span class="glyphicon glyphicon-remove"></span> Close 
 					</button>
 					<input type="checkbox" ng-model="active.public"> Public
-					<span class="label label-default" ng-show="active.created">Created on {{active.created | date:'medium'}}</span>
-					<span class="label label-default" ng-show="active.lastChanged">Last changed on {{active.lastChanged | date:'medium'}}</span>
+					<span class="label label-default" ng-show="active.created">Added: {{active.created | date:'short'}}</span>
+					<span class="label label-default" ng-show="active.lastChanged">Editted: {{active.lastChanged | date:'short'}}</span>
 				</div>
 				<div class="panel-body">
 					<input type="text" class="form-control" ng-model="active.title">
 					<hr>
 					<textarea class="form-control" rows="5" ng-model="active.code"></textarea>
 				</div>
+			</div>
+			<div class="panel panel-default" ng-show="user">
+				<div class="panel-heading">
+					My Private Sessions
+				</div>
 				<div class="panel-body">
 					<div class="btn-group">
-						<button class="btn btn-default" ng-repeat="session in sessions" ng-click="setActive(session.$id, session)">{{session.$id}}</button>
+						<button class="btn btn-default" ng-repeat="session in myPrivateSessions" ng-click="setActive(session.$id, session, false)">{{session.title}}</button>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-default" ng-show="user">
+				<div class="panel-heading">
+					My Public Sessions
+				</div>
+				<div class="panel-body">
+					<div class="btn-group">
+						<button class="btn btn-default" ng-repeat="session in myPublicSessions" ng-click="setActive(session.$id, session, true)">{{session.title}}</button>
 					</div>
 				</div>
 			</div>
