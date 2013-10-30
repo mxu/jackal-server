@@ -52,16 +52,6 @@
 							<span class="glyphicon glyphicon-remove"></span>
 						</button>
 							<input type="checkbox" class="pull-right" ng-model="active.public"> 
-						<!-- <div class="input-group">
-							<span class="input-group-addon">
-								<input type="checkbox" ng-model="active.public">
-							</span>
-							<span class="input-group-btn">
-								<button type="button" class="btn btn-default" disabled="disabled">
-									public
-								</button>
-							</span>
-						</div> -->
 						<button type="button" class="btn btn-default" disabled="disabled" ng-show="active.created">
 							Added: {{active.created | date:'short'}}
 						</button>
@@ -104,7 +94,9 @@
 				<div class="panel-heading">
 					All Public Sessions
 				</div>
+				<!-- requires nested iterator because the sessions are stored in a list for each user within a list of all other users -->
 				<div class="panel-body" ng-repeat="userObj in allPublicSessions" ng-show="userObj.sessions.length > 0">
+					<!-- iterate over the sessions for each user -->
 					<div class="btn-group">
 						<button class="btn btn-primary" disabled="disabled">
 							{{userObj.name}}

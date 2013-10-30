@@ -31,6 +31,7 @@ jackalApp.controller(
 		$scope.$on('angularFireAuth:login', function(evt, user) {
 			var usersRef = ref.child('users');
 			
+			// initialize the public session array
 			$scope.allPublicSessions = [];
 
 			usersRef.once('value', function(snapshot) {
@@ -45,8 +46,11 @@ jackalApp.controller(
 					usersRef.child(user.uid).child('online').set(true);
 				}
 
+				// iterate over the uids in the user table
 				for(uid in snapshot.val()) {
+					// find the public sessions for every user except the currently logged in one
 					if(uid != $scope.user.uid) {
+						// add an angularFireCollection for that user's public sessions
 						$scope.allPublicSessions.push({
 							'name': snapshot.val()[uid].name,
 							'sessions': angularFireCollection(ref.child('sessions').child(uid).child('public'))
