@@ -38,21 +38,37 @@
 			</div>
 			<div class="panel panel-default" ng-show="user">
 				<div class="panel-heading">
-					<button type="button" class="btn btn-default" ng-hide="activeID" ng-click="addSession()">
-						<span class="glyphicon glyphicon-file"></span> New 
-					</button>
-					<button type="button" class="btn btn-default" ng-show="activeID" ng-click="saveSession()">
-						<span class="glyphicon glyphicon-file"></span> Save 
-					</button>
-					<button type="button" class="btn btn-default" ng-show="activeID" ng-click="removeSession()">
-						<span class="glyphicon glyphicon-trash"></span> Remove 
-					</button>
-					<button type="button" class="btn btn-default" ng-show="activeID" ng-click="closeSession()">
-						<span class="glyphicon glyphicon-remove"></span> Close 
-					</button>
-					<input type="checkbox" ng-model="active.public"> Public
-					<span class="label label-default" ng-show="active.created">Added: {{active.created | date:'short'}}</span>
-					<span class="label label-default" ng-show="active.lastChanged">Editted: {{active.lastChanged | date:'short'}}</span>
+					<div class="form-group">
+						<button type="button" class="btn btn-default" ng-hide="activeID" ng-click="addSession()">
+							<span class="glyphicon glyphicon-file"></span>
+						</button>
+						<button type="button" class="btn btn-default" ng-show="activeID" ng-click="saveSession()">
+							<span class="glyphicon glyphicon-file"></span> 
+						</button>
+						<button type="button" class="btn btn-default" ng-show="activeID" ng-click="removeSession()">
+							<span class="glyphicon glyphicon-trash"></span>
+						</button>
+						<button type="button" class="btn btn-default" ng-show="activeID" ng-click="closeSession()">
+							<span class="glyphicon glyphicon-remove"></span>
+						</button>
+							<input type="checkbox" class="pull-right" ng-model="active.public"> 
+						<!-- <div class="input-group">
+							<span class="input-group-addon">
+								<input type="checkbox" ng-model="active.public">
+							</span>
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default" disabled="disabled">
+									public
+								</button>
+							</span>
+						</div> -->
+						<button type="button" class="btn btn-default" disabled="disabled" ng-show="active.created">
+							Added: {{active.created | date:'short'}}
+						</button>
+						<button type="button" class="btn btn-default" disabled="disabled" ng-show="active.lastChanged">
+							Editted: {{active.lastChanged | date:'short'}}
+						</span>
+					</div>
 				</div>
 				<div class="panel-body">
 					<input type="text" class="form-control" ng-model="active.title">
@@ -66,7 +82,9 @@
 				</div>
 				<div class="panel-body">
 					<div class="btn-group">
-						<button class="btn btn-default" ng-repeat="session in myPrivateSessions" ng-click="setActive(session.$id, session, false)">{{session.title}}</button>
+						<button class="btn btn-default" ng-repeat="session in myPrivateSessions" ng-click="setActive(session.$id, session, false)">
+							{{session.title}}
+						</button>
 					</div>
 				</div>
 			</div>
@@ -76,7 +94,24 @@
 				</div>
 				<div class="panel-body">
 					<div class="btn-group">
-						<button class="btn btn-default" ng-repeat="session in myPublicSessions" ng-click="setActive(session.$id, session, true)">{{session.title}}</button>
+						<button class="btn btn-default" ng-repeat="session in myPublicSessions" ng-click="setActive(session.$id, session, true)">
+							{{session.title}}
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-default" ng-show="user">
+				<div class="panel-heading">
+					All Public Sessions
+				</div>
+				<div class="panel-body" ng-repeat="userObj in allPublicSessions" ng-show="userObj.sessions.length > 0">
+					<div class="btn-group">
+						<button class="btn btn-primary" disabled="disabled">
+							{{userObj.name}}
+						</button>
+						<button class="btn btn-default" ng-repeat="session in userObj.sessions" ng-click="setActive(session.$id, session, true)">
+							{{session.title}}
+						</button>
 					</div>
 				</div>
 			</div>

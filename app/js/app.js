@@ -10,7 +10,7 @@ jackalApp.controller(
 
 		$scope.myPrivateSessions = [];
 		$scope.myPublicSessions = [];
-		//$scope.allPublicSessions = [];
+		$scope.allPublicSessions = [];
 		$scope.active = {title: '', code: '', public: false}
 
 		$scope.login = function() {
@@ -23,11 +23,16 @@ jackalApp.controller(
 			angularFireAuth.logout();
 			userRef = null;
 			userSessionsRef = null;
+			$scope.myPrivateSessions = [];
+			$scope.myPublicSessions = [];
+			$scope.allPublicSessions = [];
 		}
 
 		$scope.$on('angularFireAuth:login', function(evt, user) {
 			var usersRef = ref.child('users');
 			
+			$scope.allPublicSessions = [];
+
 			usersRef.once('value', function(snapshot) {
 				if(snapshot.val()[user.uid] == null) {
 					console.log('creating user ' + user.uid);
@@ -38,6 +43,15 @@ jackalApp.controller(
 				} else {
 					console.log('logging in as ' + user.uid);
 					usersRef.child(user.uid).child('online').set(true);
+				}
+
+				for(uid in snapshot.val()) {
+					if(uid != $scope.user.uid) {
+						$scope.allPublicSessions.push({
+							'name': snapshot.val()[uid].name,
+							'sessions': angularFireCollection(ref.child('sessions').child(uid).child('public'))
+						});
+					}
 				}
 			});
 
