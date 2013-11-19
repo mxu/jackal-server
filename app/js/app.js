@@ -19,7 +19,6 @@ jackalApp.controller(
 
 		$scope.logout = function() {
 			console.log('logging out user ' + $scope.user.uid);
-			userRef.child('online').set(false);
 			angularFireAuth.logout();
 			userRef = null;
 			userSessionsRef = null;
@@ -38,12 +37,10 @@ jackalApp.controller(
 				if(snapshot.val()[user.uid] == null) {
 					console.log('creating user ' + user.uid);
 					usersRef.child(user.uid).set({
-						name: user.name,
-						online: true
+						username: user.username
 					});
 				} else {
 					console.log('logging in as ' + user.uid);
-					usersRef.child(user.uid).child('online').set(true);
 				}
 
 				// iterate over the uids in the user table
@@ -52,7 +49,8 @@ jackalApp.controller(
 					if(uid != $scope.user.uid) {
 						// add an angularFireCollection for that user's public sessions
 						$scope.allPublicSessions.push({
-							'name': snapshot.val()[uid].name,
+							'uid': uid,
+							'username': snapshot.val()[uid].username,
 							'sessions': angularFireCollection(ref.child('sessions').child(uid).child('public'))
 						});
 					}
@@ -77,10 +75,11 @@ jackalApp.controller(
 			});
 		}
 
-		$scope.setActive = function(id, session, public) {
+		$scope.setActive = function(id, session, public, owner) {
 			$scope.activeID = id;
 			$scope.active = session;
 			$scope.active.public = public;
+			$scope.active.owner = owner;
 		}
 
 		$scope.saveSession = function() {
@@ -102,6 +101,18 @@ jackalApp.controller(
 
 			sessionRef.child('lastChanged').once('value', function(snapshot) {
 				$scope.active.lastChanged = snapshot.val();
+			});
+		}
+
+		$scope.forkSession = function() {
+			var sessionRef = ref.child('sessions/' + $scope.user.uid + '/' + ($scope.active.public ? 'public' : 'private')).push();
+
+			sessionRef.set({
+				title: $scope.active.title,
+				code: $scope.active.code,
+				created: Firebase.ServerValue.TIMESTAMP,
+				lastChanged: Firebase.ServerValue.TIMESTAMP,
+				forkedFrom: $scope.active.owner + '|' + $scope.activeID
 			});
 		}
 

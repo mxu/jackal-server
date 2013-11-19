@@ -42,8 +42,11 @@
 						<button type="button" class="btn btn-default" ng-hide="activeID" ng-click="addSession()">
 							<span class="glyphicon glyphicon-file"></span>
 						</button>
-						<button type="button" class="btn btn-default" ng-show="activeID" ng-click="saveSession()">
-							<span class="glyphicon glyphicon-file"></span> 
+						<button type="button" class="btn btn-default" ng-show="activeID && active.owner == user.uid" ng-click="saveSession()">
+							<span class="glyphicon glyphicon-floppy-disk"></span> 
+						</button>
+						<button type="button" class="btn btn-default" ng-show="activeID && active.owner != user.uid" ng-click="forkSession()">
+							<span class="glyphicon glyphicon-random"></span>
 						</button>
 						<button type="button" class="btn btn-default" ng-show="activeID" ng-click="removeSession()">
 							<span class="glyphicon glyphicon-trash"></span>
@@ -51,13 +54,19 @@
 						<button type="button" class="btn btn-default" ng-show="activeID" ng-click="closeSession()">
 							<span class="glyphicon glyphicon-remove"></span>
 						</button>
-							<input type="checkbox" class="pull-right" ng-model="active.public"> 
 						<button type="button" class="btn btn-default" disabled="disabled" ng-show="active.created">
 							Added: {{active.created | date:'short'}}
 						</button>
 						<button type="button" class="btn btn-default" disabled="disabled" ng-show="active.lastChanged">
 							Editted: {{active.lastChanged | date:'short'}}
-						</span>
+						</button>
+						<button type="button" class="btn btn-default" disabled="disabled" ng-show="active.created">
+							By: {{active.owner}}
+						</button>
+						<button type="button" class="btn btn-default" disabled="disabled" ng-show="active.forkedFrom">
+							Forked From: {{active.forkedFrom}}
+						</button>
+						<input type="checkbox" class="pull-right" ng-model="active.public">
 					</div>
 				</div>
 				<div class="panel-body">
@@ -72,7 +81,7 @@
 				</div>
 				<div class="panel-body">
 					<div class="btn-group">
-						<button class="btn btn-default" ng-repeat="session in myPrivateSessions" ng-click="setActive(session.$id, session, false)">
+						<button class="btn btn-default" ng-repeat="session in myPrivateSessions" ng-click="setActive(session.$id, session, false, user.uid)">
 							{{session.title}}
 						</button>
 					</div>
@@ -84,7 +93,7 @@
 				</div>
 				<div class="panel-body">
 					<div class="btn-group">
-						<button class="btn btn-default" ng-repeat="session in myPublicSessions" ng-click="setActive(session.$id, session, true)">
+						<button class="btn btn-default" ng-repeat="session in myPublicSessions" ng-click="setActive(session.$id, session, true, user.uid)">
 							{{session.title}}
 						</button>
 					</div>
@@ -99,9 +108,9 @@
 					<!-- iterate over the sessions for each user -->
 					<div class="btn-group">
 						<button class="btn btn-primary" disabled="disabled">
-							{{userObj.name}}
+							{{userObj.username}}
 						</button>
-						<button class="btn btn-default" ng-repeat="session in userObj.sessions" ng-click="setActive(session.$id, session, true)">
+						<button class="btn btn-default" ng-repeat="session in userObj.sessions" ng-click="setActive(session.$id, session, true, userObj.uid)">
 							{{session.title}}
 						</button>
 					</div>
